@@ -12,4 +12,4 @@ while True:
 
     data={'data':value.decode()}
     jsonData=json.dumps(data)
-    requests.post("http://127.0.0.1:5000/Xapi",data=data)
+    requests.post("http://fuqianshan.asuscomm.com/Xapi",data=data)
