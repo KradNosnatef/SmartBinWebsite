@@ -13,7 +13,7 @@ def helloWorld():
 
 @app.route('/Xapi',methods=['POST'])
 def Xapi():
-    message["data"]=request.form["data"]
+    message["data"]+=request.form["data"]
     print(message["data"])
     return "Success"
 
