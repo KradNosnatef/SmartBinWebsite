@@ -12,40 +12,32 @@ class LinkList:
         newNode.next=self.head
         self.head=newNode
 
-    def getAll(self):
-        currentNode=self.head
+    def printAll(self):
         text="["
-
+        currentNode=self.head
         while True:
             if currentNode==None:
                 break
             text=text+str(currentNode.data)+" "
             currentNode=currentNode.next
-
         text=text+"]"
         return(text)
 
-class Stack(LinkList):
-    def __init__(self):
-        LinkList.__init__(self)
-
-    def push(self,data):
-        self.insertIntoHead(data)
-
-    def pop(self):
-        result=self.head.data
-        self.head=self.head.next
-        return(result)
-
-class HanoiTower:
+class TowerOfHanoi:
     def __init__(self,rank):
-        self.rank=rank
-        self.stackList=[Stack(),Stack(),Stack()]
-        for i in range(0,rank):
-            self.stackList[0].push(rank-i)
+        self.columns=[LinkList(),LinkList(),LinkList()]
 
-    def print(self):
-        text=self.stackList[0].getAll()+self.stackList[1].getAll()+self.stackList[2].getAll()
+        for i in range(0,rank):
+            diskSize=rank-i
+            self.columns[0].insertIntoHead(diskSize)
+        
+    def printMyself(self):
+        text=self.columns[0].printAll()+self.columns[1].printAll()+self.columns[2].printAll()
         print(text)
 
-        
+    def moveFromAtoB(columnAIndex,columnBIndex):
+        #your code here
+
+
+myHanoiTower=TowerOfHanoi(10)
+myHanoiTower.printMyself()
