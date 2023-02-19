@@ -35,7 +35,7 @@ class TowerOfHanoi:
         text=self.columns[0].printAll()+self.columns[1].printAll()+self.columns[2].printAll()
         print(text)
 
-    def moveFromAtoB(columnAIndex,columnBIndex):
+    def moveFromAtoB(self,columnAIndex,columnBIndex):
         #your code here
 
 
