@@ -75,6 +75,3 @@ class TowerOfHanoi:
     # 1. find smallest disk
     # 2. find where is 'left'
     # 3. move from A to B 
-
-myHanoiTower=TowerOfHanoi(10)
-myHanoiTower.printMyself()
