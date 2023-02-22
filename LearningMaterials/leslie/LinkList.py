@@ -1,4 +1,4 @@
-from LinkisNode import *
+from LinkListNode import *
 
 class LinkList:
     def __init__(self):
