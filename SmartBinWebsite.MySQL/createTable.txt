@@ -1,0 +1,32 @@
+CREATE TABLE bin (
+BID Int NOT NULL,
+Altitude float NOT NULL,
+Longitude float NOT NULL,
+PRIMARY KEY (BID)
+);
+
+CREATE TABLE rawInfo (
+RID Int NOT NULL,
+BID Int NOT NULL,
+Acc_X float NOT NULL,
+Acc_Y float NOT NULL,
+Acc_Z float NOT NULL,
+Weight float NOT NULL,
+Distance float NOT NULL,
+Pitch float NOT NULL,
+Roll float NOT NULL,
+Timestamp datetime NOT NULL,
+PRIMARY KEY (RID),
+FOREIGN KEY (BID) REFERENCES bin(BID)
+);
+
+CREATE TABLE alert (
+AID Int NOT NULL,
+BID Int NOT NULL,
+Text varchar(500) NOT NULL,
+Timestamp datetime NOT NULL,
+PRIMARY KEY (AID),
+FOREIGN KEY (BID) REFERENCES Bin(BID)
+);
+
+
