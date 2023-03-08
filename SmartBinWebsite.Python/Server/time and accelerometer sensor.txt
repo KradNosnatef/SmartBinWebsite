@@ -1,0 +1,31 @@
+time = 0
+error = 0
+pitch = 0
+Dist = 0
+radio.set_group(40)
+
+def on_forever():
+    radio.send_value("AccelX", input.acceleration(Dimension.X))
+    radio.send_value("AccelY", input.acceleration(Dimension.Y))
+    radio.send_value("AccelZ", input.acceleration(Dimension.Z))
+    radio.send_value("Dist", 0)
+basic.forever(on_forever)
+
+def on_forever2():
+    global pitch, error, time
+    pitch = input.rotation(Rotation.PITCH)
+    error = 101010101010101010
+    if abs(pitch) >= 75:
+        time = 0
+        basic.show_string("normal")
+    else:
+        while abs(pitch) < 75:
+            basic.pause(1000)
+            time += 1
+            basic.show_number(time)
+            if time > 10:
+                basic.show_string("Open time too long")
+                radio.send_value("Status", error)
+                time = 0
+            break
+basic.forever(on_forever2)
