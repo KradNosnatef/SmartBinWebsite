@@ -1,6 +1,6 @@
 CREATE TABLE bin (
 BID Int NOT NULL,
-Altitude float NOT NULL,
+Latitude float NOT NULL,
 Longitude float NOT NULL,
 PRIMARY KEY (BID)
 );
