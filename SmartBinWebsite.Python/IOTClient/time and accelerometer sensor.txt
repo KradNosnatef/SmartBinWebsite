@@ -1,31 +1,27 @@
-time = 0
-error = 0
-pitch = 0
+def on_button_pressed_a():
+    HX711.set_scale(5000)
+    HX711.tare(10)
+input.on_button_pressed(Button.A, on_button_pressed_a)
+
+valor2 = 0
 Dist = 0
+pitch = 0
+error = 0
+time = 0
+valor = 0
+HX711.SetPIN_DOUT(DigitalPin.P0)
+HX711.SetPIN_SCK(DigitalPin.P8)
+HX711.begin()
 radio.set_group(40)
 
 def on_forever():
+    global valor2
+    valor2 = HX711.get_units(10)
+    radio.send_value("weight", valor2 * 20)
     radio.send_value("AccelX", input.acceleration(Dimension.X))
     radio.send_value("AccelY", input.acceleration(Dimension.Y))
     radio.send_value("AccelZ", input.acceleration(Dimension.Z))
-    radio.send_value("Dist", 0)
+    radio.send_value("pitch", input.rotation(Rotation.PITCH))
+    radio.send_value("Dist", grove.measure_in_centimeters(DigitalPin.P1))
+    basic.pause(100)
 basic.forever(on_forever)
-
-def on_forever2():
-    global pitch, error, time
-    pitch = input.rotation(Rotation.PITCH)
-    error = 101010101010101010
-    if abs(pitch) >= 75:
-        time = 0
-        basic.show_string("normal")
-    else:
-        while abs(pitch) < 75:
-            basic.pause(1000)
-            time += 1
-            basic.show_number(time)
-            if time > 10:
-                basic.show_string("Open time too long")
-                radio.send_value("Status", error)
-                time = 0
-            break
-basic.forever(on_forever2)
