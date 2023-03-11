@@ -8,7 +8,6 @@ PRIMARY KEY (BID)
 CREATE TABLE rawInfo (
 RID Int NOT NULL AUTO_INCREMENT,
 BID Int NOT NULL,
-float NOT NULL,
 Weight float NOT NULL,
 Distance float NOT NULL,
 Pitch float NOT NULL,
