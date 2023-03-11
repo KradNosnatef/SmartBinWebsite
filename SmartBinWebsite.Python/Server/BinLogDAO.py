@@ -20,3 +20,10 @@ class BinLogDAO:
         mydb.commit()
 
         return cursor.lastrowid
+    
+
+    def insertRawInfo(BID,weight,distance,pitch,roll):
+        pass
+
+    def insertAlert(BID,text):
+        pass
