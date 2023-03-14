@@ -1,0 +1,37 @@
+import JSON
+serial.redirect_to_usb()
+radio.set_group(40)
+
+data={  'weight':-1,
+        'roll':-1,
+        'pitch':-1,
+        'distance':-1,
+        'alert0':-1,
+        'alert1':-1
+            }
+
+def on_received_value(name, value):
+    global data
+    if name=="weight":data["weight"]=value
+    if name=="roll":data["roll"]=value
+    if name=="pitch":data["pitch"]=value
+    if name=="distance":data["distance"]=value
+    if name=="alert0":data["alert0"]=value
+    if name=="alert1":data["alert1"]=value
+
+def on_received_number(receivedNumber):
+    global data
+    if receivedNumber==1:
+        serial.write_line(JSON.stringify(data))
+        data={  'weight':-1,
+                'roll':-1,
+                'pitch':-1,
+                'distance':-1,
+                'alert0':-1,
+                'alert1':-1
+                    }
+
+radio.on_received_number(on_received_number)
+radio.on_received_value(on_received_value)
+
+
