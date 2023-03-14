@@ -22,7 +22,8 @@ def Xapi():
         dataObject["BID"]=BinLogDAO.BinRigister(0,0)
 
     BinLogDAO.insertRawInfo(dataObject["BID"],dataObject["weight"],dataObject["distance"],dataObject["pitch"],dataObject["roll"])
-    if dataObject["alert1"]==1:BinLogDAO.insertAlert(dataObject["BID"],"Vibration")
+    if dataObject["alert0"]==1:BinLogDAO.insertAlert(dataObject["BID"],"SwitchDoor Detected")
+    if dataObject["alert1"]==1:BinLogDAO.insertAlert(dataObject["BID"],"Vibration Detected")
 
     return str(dataObject["BID"])
 

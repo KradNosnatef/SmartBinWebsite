@@ -11,7 +11,7 @@ serial.open()
 while True:
     try:
         value = serial.readline()
-        #print(value.decode())
+        print(value.decode())
 
         dataObject=json.loads(value.decode().rstrip("\r\n"))
         dataObject["BID"]=BID

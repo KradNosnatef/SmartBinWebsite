@@ -16,6 +16,11 @@ radio.set_group(40)
 #[0] is door switch, [1] is vibrate
 alertList=[0,0]
 
+def switchDoorSensingService():
+    global alertList
+    if abs(input.rotation(Rotation.PITCH))>100 or abs(input.rotation(Rotation.PITCH))<80:
+        alertList[0]=1
+
 def getAccelerationSum():
     
     return int(Math.sqrt(input.acceleration(Dimension.X)**2+input.acceleration(Dimension.Y)**2+input.acceleration(Dimension.Z)**2))
@@ -56,16 +61,8 @@ def vibrationSensingService():
 
 def radioSendingService():
     global alertList
-    global valor2
-    data={  'weight':HX711.read(),
-            'roll':input.rotation(Rotation.ROLL),
-            'pitch':input.rotation(Rotation.PITCH),
-            'distance':int(grove.measure_in_centimeters(DigitalPin.P1)*10),
-            'alert0':alertList[0],
-            'alert1':alertList[1]
-            }
 
-    radio.send_value("weight", HX711.read())
+    radio.send_value("weight", HX711.get_units(10)*20)
     radio.send_value("roll", input.rotation(Rotation.ROLL))
     radio.send_value("pitch", input.rotation(Rotation.PITCH))
     radio.send_value("distance", int(grove.measure_in_centimeters(DigitalPin.P1)*10))
@@ -74,7 +71,10 @@ def radioSendingService():
     pause(50)
     radio.send_number(1)
 
-    basic.pause(2050)
+    if alertList[0]==1:alertList[0]=0
+    if alertList[1]==1:alertList[1]=0
+
+    basic.pause(10050)
 
 basic.forever(vibrationSensingService)
 basic.forever(radioSendingService)
