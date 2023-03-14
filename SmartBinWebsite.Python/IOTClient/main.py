@@ -22,4 +22,4 @@ while True:
     except:
         pass
     result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
-    print(result.text)
+    if BID==-1:BID=int(result.text)
