@@ -57,19 +57,24 @@ def vibrationSensingService():
 def radioSendingService():
     global alertList
     global valor2
-    data={  'weight':valor2 * 20,
+    data={  'weight':HX711.read(),
             'roll':input.rotation(Rotation.ROLL),
             'pitch':input.rotation(Rotation.PITCH),
-            'distance':grove.measure_in_centimeters(DigitalPin.P1),
+            'distance':int(grove.measure_in_centimeters(DigitalPin.P1)*10),
             'alert0':alertList[0],
             'alert1':alertList[1]
             }
 
+    radio.send_value("weight", HX711.read())
+    radio.send_value("roll", input.rotation(Rotation.ROLL))
+    radio.send_value("pitch", input.rotation(Rotation.PITCH))
+    radio.send_value("distance", int(grove.measure_in_centimeters(DigitalPin.P1)*10))
+    radio.send_value("alert0", alertList[0])
+    radio.send_value("alert1", alertList[1])
+    pause(50)
+    radio.send_number(1)
 
-    jsonString=JSON.stringify(data)
-    radio.send_string(jsonString)
-
-    basic.pause(10050)
+    basic.pause(2050)
 
 basic.forever(vibrationSensingService)
 basic.forever(radioSendingService)
