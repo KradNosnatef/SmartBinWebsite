@@ -2,7 +2,7 @@ import mysql.connector
 import datetime
   
 mydb = mysql.connector.connect(
-    host = 'localhost',
+    host = 'fuqianshan.asuscomm.com',
     user = 'fuqianshan',
     password = 'KRPCGroup',
     database = 'smartbin'
