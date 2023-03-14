@@ -10,7 +10,9 @@ serial.open()
 while True:
     try:
         value = serial.readline()
-        print(value)
+        print(value.decode())
+        obj=json.loads(value.decode().rstrip("\r\n"))
+        print(obj["fuck"])
         """data1=re.search("[a-z]+:([0-9]|[a-z]|[A-Z]|.)*",value.decode()).group()
 
         data2=data1.split(":",1)

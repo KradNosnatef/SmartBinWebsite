@@ -1,7 +1,11 @@
+import JSON
+
 def on_button_pressed_a():
     HX711.set_scale(5000)
     HX711.tare(10)
 input.on_button_pressed(Button.A, on_button_pressed_a)
+
+serial.redirect_to_usb()
 
 valor2 = 0
 HX711.SetPIN_DOUT(DigitalPin.P0)
@@ -9,12 +13,63 @@ HX711.SetPIN_SCK(DigitalPin.P8)
 HX711.begin()
 radio.set_group(40)
 
-def on_forever():
+#[0] is door switch, [1] is vibrate
+alertList=[0,0]
+
+def getAccelerationSum():
+    
+    return int(Math.sqrt(input.acceleration(Dimension.X)**2+input.acceleration(Dimension.Y)**2+input.acceleration(Dimension.Z)**2))
+
+startSensingGate=2000
+sendAlertGate=15000
+sensingTimeLimit=10000
+startVibrationSensing=False
+sensingTimeCounter=0
+sensingIntegrationCounter=0
+
+def vibrationSensingService():
+    global alertList
+
+    global startSensingGate
+    global sendAlertGate
+    global sensingTimeLimit
+    global startVibrationSensing
+    global sensingTimeCounter
+    global sensingIntegrationCounter
+
+    accelerationSum=getAccelerationSum()
+    if startVibrationSensing==False:
+        if accelerationSum>startSensingGate:startVibrationSensing=True
+
+    if sensingTimeCounter>sensingTimeLimit:
+        if sensingIntegrationCounter>sendAlertGate:
+            alertList[1]=1
+        startVibrationSensing=False
+        sensingTimeCounter=0
+        sensingIntegrationCounter=0
+
+    if startVibrationSensing==True:
+        sensingTimeCounter=sensingTimeCounter+1000
+        sensingIntegrationCounter=sensingIntegrationCounter+accelerationSum
+
+    pause(1000)
+
+def radioSendingService():
+    global alertList
     global valor2
-    valor2 = HX711.get_units(10)
-    radio.send_value("weight", valor2 * 20)
-    radio.send_value("roll", input.rotation(Rotation.ROLL))
-    radio.send_value("pitch", input.rotation(Rotation.PITCH))
-    radio.send_value("Dist", grove.measure_in_centimeters(DigitalPin.P1))
-    basic.pause(100)
-basic.forever(on_forever)
+    data={  'weight':valor2 * 20,
+            'roll':input.rotation(Rotation.ROLL),
+            'pitch':input.rotation(Rotation.PITCH),
+            'distance':grove.measure_in_centimeters(DigitalPin.P1),
+            'alert0':alertList[0],
+            'alert1':alertList[1]
+            }
+
+
+    jsonString=JSON.stringify(data)
+    radio.send_string(jsonString)
+
+    basic.pause(10050)
+
+basic.forever(vibrationSensingService)
+basic.forever(radioSendingService)
