@@ -27,5 +27,9 @@ def Xapi():
 
     return str(dataObject["BID"])
 
+@app.route('/Wapi/getBinBriefing')
+def getBinBriefing():
+    return(json.dumps(BinLogDAO.getBinBriefing()))
+
 if __name__ == '__main__':
    app.run(host='0.0.0.0')
