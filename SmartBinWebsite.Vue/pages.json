@@ -3,14 +3,27 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "Admin Login"
 			}
+		},
+		{
+			"path": "pages/index/mainMenu"
+		},
+		{
+			"path": "pages/index/realTimeTelemetry/main"
+		},
+		{
+			"path": "pages/index/logInfo/main"
+		},
+		{
+			"path": "pages/index/centeralMonitoring/main"
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "SmartBin Web",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"enablePullDownRefresh": true
 	}
 }

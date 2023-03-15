@@ -1,9 +1,16 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
 		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view>
+		<div>
+			<form>
+				password: <input type="text" name="password" style="background-color: aqua;" />
+			</form>
+			<router-link to="mainMenu">
+				<button>login</button>
+			</router-link>
+		</div>
 	</view>
 </template>
 
@@ -11,14 +18,13 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+				title: 'Input admin password to login'
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
-
 		}
 	}
 </script>
