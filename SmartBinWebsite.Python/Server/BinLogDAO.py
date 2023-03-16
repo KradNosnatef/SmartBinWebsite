@@ -65,7 +65,7 @@ class BinLogDAO:
         cursor.close()
         return result2
     
-    def getBinAlertListByBID(BID):
+    def getAlertsByBID(BID):
         mydb.commit()
 
         cursor=mydb.cursor()
@@ -77,7 +77,7 @@ class BinLogDAO:
         cursor.close()
         return result
     
-    def getBinRawInfoByBID(BID):
+    def getRawInfoByBID(BID):
         mydb.commit()
         
         cursor=mydb.cursor()

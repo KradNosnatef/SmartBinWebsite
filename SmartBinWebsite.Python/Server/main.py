@@ -32,5 +32,13 @@ def Xapi():
 def getBinBriefing():
     return(json.dumps(BinLogDAO.getBinBriefing()))
 
+@app.route('/Wapi/getAlertsByBID',methods=['POST'])
+@cross_origin()
+def getAlertsByBID():
+    dataObject=json.loads(request.form["data"])
+
+    result=json.dumps(BinLogDAO.getAlertsByBID(dataObject.BID))
+    return result
+
 if __name__ == '__main__':
    app.run(host='0.0.0.0')
