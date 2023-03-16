@@ -5,8 +5,11 @@
 		</p>
 		<p>Longitude: {{dialogSettings.lng}}</p>
 		<p>Latitude: {{dialogSettings.lat}}</p>
-		<p>Most Recent Alert: {{dialogSettings.recentAlert}}</p>
-		<button @click="onClick">test</button>
+		</br>
+		<p>Most Recent Alert: {{dialogSettings.recentAlert}} </br>at {{dialogSettings.recentAlertTimeText}}</p>
+		<button @click="onClick" style="margin-top: 5px;">goto Real-Time Telemetry</button>
+		<button @click="onClick" style="margin-top: 5px;">goto Log Info</button>
+		<button @click="onClickCancel" style="margin-top: 5px;">cancel</button>
 	</div>
 </template>
 
@@ -20,19 +23,12 @@
 
 			}
 		},
-		onShow() {},
+		onShow() {
+		},
 		methods: {
-			onClick() {
-				uni.request({
-					url: "/Wapi/getAlertsByBID",
-					method: 'POST',
-					data: {
-						BID: 15
-					},
-					success: (response) => {
-						console.log(response)
-					}
-				})
+			onClick() {},
+			onClickCancel(){
+				this.$emit("cancel")
 			}
 		}
 	}

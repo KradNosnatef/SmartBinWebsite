@@ -4,9 +4,9 @@
 		<p v-for="bin in bins">
 			<BinItemCard v-bind:bin="bin" @selectBinByButton="selectBinByButtonHandler"></BinItemCard>
 		</p>
-		
+
 		<dialog id="binInfoDialog" style="margin: auto;">
-			<BinInfoDialog v-bind:dialogSettings="dialogSettings"></BinInfoDialog>
+			<BinInfoDialog v-bind:dialogSettings="dialogSettings" @cancel="closeInfoDialog"></BinInfoDialog>
 		</dialog>
 	</view>
 </template>
@@ -18,13 +18,14 @@
 	export default {
 		data() {
 			return {
-				bins:[],
+				bins: [],
 				points: [],
-				dialogSettings:{
-					BID:0,
-					lat:0,
-					lng:0,
-					recentAlert:""
+				dialogSettings: {
+					BID: 0,
+					lat: 0,
+					lng: 0,
+					recentAlert: "",
+					recentAlertTimeText: ""
 				}
 			}
 		},
@@ -33,22 +34,22 @@
 				url: "/Wapi/getBinBriefing",
 				method: 'GET',
 				success: (res) => {
-					this.bins=[]
+					this.bins = []
 					this.points = []
 					//console.log(res.data)
 					for (var i = 0; i < res.data.length; i++) {
-						
+
 						this.points[i] = {}
 						//console.log(res.data[i].longitude)
 						this.points[i].lng = res.data[i].longitude
 						this.points[i].lat = res.data[i].latitude
 						//console.log(i)
-						
-						this.bins[i]={
-							BID:res.data[i].BID,
-							lat:res.data[i].latitude,
-							lng:res.data[i].longitude,
-							recentAlert:res.data[i].text
+
+						this.bins[i] = {
+							BID: res.data[i].BID,
+							lat: res.data[i].latitude,
+							lng: res.data[i].longitude,
+							recentAlert: res.data[i].text
 						}
 					}
 					console.log(this.bins)
@@ -66,28 +67,44 @@
 		},
 		methods: {
 			selectBinByMapHandler(event) {
-				console.log("the index:" + event.index +" is selected")
+				console.log("the index:" + event.index + " is selected")
 				this.selectBinHandler(event.index)
 			},
 			selectBinByButtonHandler(event) {
-				var index=0
-				for(var i=0;i<this.bins.length;i++){
-					if (event.BID==this.bins[i].BID){
-						index=i
+				var index = 0
+				for (var i = 0; i < this.bins.length; i++) {
+					if (event.BID == this.bins[i].BID) {
+						index = i
 						break
 					}
 				}
-				console.log("the index:" + index +" is selected")
+				console.log("the index:" + index + " is selected")
 				this.selectBinHandler(index)
 			},
-			
-			selectBinHandler(index){
-				this.dialogSettings.BID=this.bins[index].BID
-				this.dialogSettings.lat=this.bins[index].lat
-				this.dialogSettings.lng=this.bins[index].lng
-				this.dialogSettings.recentAlert=this.bins[index].recentAlert
-				
+
+			selectBinHandler(index) {
+				this.dialogSettings.BID = this.bins[index].BID
+				this.dialogSettings.lat = this.bins[index].lat
+				this.dialogSettings.lng = this.bins[index].lng
+
+
+				uni.request({
+					url: "/Wapi/getAlertsByBID",
+					method: 'POST',
+					data: {
+						BID: this.bins[index].BID
+					},
+					success: (response) => {
+						//console.log(response.data[0][1])
+						this.dialogSettings.recentAlert=response.data[0][0]
+						this.dialogSettings.recentAlertTimeText=response.data[0][1]
+					}
+				})
 				binInfoDialog.showModal()
+			},
+			
+			closeInfoDialog(){
+				binInfoDialog.close()
 			}
 		}
 	}

@@ -2,7 +2,6 @@
 	<div>
 		<button class="binItemCard" @click="onButtonClick">
 			<text style="float:left">BID:{{bin.BID}}</text>
-			</br>
 			<text>recent alert:{{bin.recentAlert}}</text>
 		</button>
 	</div>
