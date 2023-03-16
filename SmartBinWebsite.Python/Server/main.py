@@ -35,10 +35,13 @@ def getBinBriefing():
 @app.route('/Wapi/getAlertsByBID',methods=['POST'])
 @cross_origin()
 def getAlertsByBID():
-    dataObject=json.loads(request.form["data"])
+    print(request.data.decode())
+    dataObject=json.loads(request.data.decode())
 
-    result=json.dumps(BinLogDAO.getAlertsByBID(dataObject.BID))
-    return result
+
+    
+    BinLogDAO.getAlertsByBID(int(dataObject['BID']))
+    return 'result'
 
 if __name__ == '__main__':
    app.run(host='0.0.0.0')

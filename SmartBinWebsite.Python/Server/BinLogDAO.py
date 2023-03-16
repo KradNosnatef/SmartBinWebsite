@@ -79,7 +79,7 @@ class BinLogDAO:
     
     def getRawInfoByBID(BID):
         mydb.commit()
-        
+
         cursor=mydb.cursor()
         sql="SELECT * from rawInfo where BID=%s order by Timestamp desc;"
         val=(BID,)
