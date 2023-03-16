@@ -9,6 +9,7 @@ mydb = mysql.connector.connect(
 )
 
 class BinLogDAO:
+    
 
     #register the bin into the database and return BID
     def BinRigister(latitude,longitude):
@@ -21,7 +22,7 @@ class BinLogDAO:
         result=cursor.lastrowid
         cursor.close()
 
-        return cursor.lastrowid
+        return result
     
 
     def insertRawInfo(BID, weight, distance, pitch, roll):
@@ -51,7 +52,8 @@ class BinLogDAO:
         return 0
     
     def getBinBriefing():
-        
+        mydb.commit()
+
         cursor=mydb.cursor()
         sql="SELECT bin.BID,bin.Latitude,bin.Longitude,TB.nearestAlert from bin left join (select BID, substring_index(group_concat(text order by Timestamp desc),',',1) as nearestAlert from alert group by BID) as TB on bin.BID=TB.BID;"
         cursor.execute(sql)
@@ -64,6 +66,8 @@ class BinLogDAO:
         return result2
     
     def getBinAlertListByBID(BID):
+        mydb.commit()
+
         cursor=mydb.cursor()
         sql="SELECT * from alert where BID=%s order by Timestamp desc;"
         val=(BID,)
@@ -74,6 +78,8 @@ class BinLogDAO:
         return result
     
     def getBinRawInfoByBID(BID):
+        mydb.commit()
+        
         cursor=mydb.cursor()
         sql="SELECT * from rawInfo where BID=%s order by Timestamp desc;"
         val=(BID,)
