@@ -28,6 +28,7 @@ def Xapi():
     return str(dataObject["BID"])
 
 @app.route('/Wapi/getBinBriefing')
+@cross_origin()
 def getBinBriefing():
     return(json.dumps(BinLogDAO.getBinBriefing()))
 
