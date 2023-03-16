@@ -65,11 +65,12 @@ class BinLogDAO:
         cursor.close()
         return result2
     
+    #return list[(Text,TimeText)] order by time desc 
     def getAlertsByBID(BID):
         mydb.commit()
 
         cursor=mydb.cursor()
-        sql="SELECT * from alert where BID=%s order by Timestamp desc;"
+        sql="SELECT Text,cast(Timestamp as char(20)) from alert where BID=%s order by Timestamp desc;"
         val=(BID,)
         cursor.execute(sql,val)
 
@@ -81,9 +82,9 @@ class BinLogDAO:
         mydb.commit()
 
         cursor=mydb.cursor()
-        sql="SELECT * from rawInfo where BID=%s order by Timestamp desc;"
+        sql="SELECT Weight,Distance,Pitch,Roll,cast(Timestamp as char(20)) from rawInfo where BID=%s order by Timestamp desc;"
         val=(BID,)
-        cursor.execute(sql,)
+        cursor.execute(sql,val)
 
         result=cursor.fetchall()
         cursor.close()
