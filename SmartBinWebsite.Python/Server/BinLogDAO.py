@@ -55,3 +55,13 @@ class BinLogDAO:
 
 
         return result2
+    
+    def getBinAlertListByBID(BID):
+        sql="SELECT * from alert order by Timestamp desc where BID=%s;"
+        val=(BID,)
+        cursor.execute(sql)
+
+        result=cursor.fetchall()
+        return result
+    
+BinLogDAO.getBinAlertListByBID(15)

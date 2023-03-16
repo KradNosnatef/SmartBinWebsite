@@ -1,0 +1,35 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "SmartBin Web"
+			}
+		},
+		{
+			"path": "pages/mainMenu/main",
+			"style": {
+				"navigationBarTitleText": "Main Menu"
+			}
+		},
+		{
+			"path": "pages/centralMonitoring/main",
+			"style": {
+				"navigationBarTitleText": "Centeral Monitoring"
+			}
+		},
+		{
+			"path": "pages/realTimeTelemetry/main",
+			"style": {
+				"navigationBarTitleText": "Real-Time Telemetry"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}
