@@ -3,7 +3,6 @@ from flask import request
 from flask_cors import *
 from BinLogDAO import *
 import json
-import requests
 
 message={"data":"No Data"}
 app=Flask(__name__)
