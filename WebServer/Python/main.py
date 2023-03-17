@@ -24,7 +24,7 @@ def Xapi():
     dataObject=json.loads(request.form["data"])
 
     if dataObject["BID"]==-1:
-        dataObject["BID"]=BinLogDAO.BinRigister(0,0)
+        dataObject["BID"]=BinLogDAO.BinRigister(dataObject["latitude"],["longitude"])
 
     BinLogDAO.insertRawInfo(dataObject["BID"],dataObject["weight"],dataObject["distance"],dataObject["pitch"],dataObject["roll"])
     if dataObject["alert0"]==1:BinLogDAO.insertAlert(dataObject["BID"],"SwitchDoor Detected")

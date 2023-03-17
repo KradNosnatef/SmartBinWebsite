@@ -1,7 +1,7 @@
 import JSON
 serial.redirect_to_usb()
-radio.set_group(40)
 
+initStep=0
 data={  'weight':-1,
         'roll':-1,
         'pitch':-1,
@@ -10,28 +10,66 @@ data={  'weight':-1,
         'alert1':-1
             }
 
-def on_received_value(name, value):
+def sendHeartBeat():
+    if initStep==2:
+        radio.send_value("HB", 1)
+    pause(500)
+basic.forever(sendHeartBeat)
+
+def showInitStep():
+    global initStep
+    basic.show_number(initStep)
+basic.forever(showInitStep)
+
+def tryConnectToBinCore():
+    global initStep
+    if initStep==1:
+        radio.send_value("CK", 0)
+    pause(500)
+basic.forever(tryConnectToBinCore)
+
+def onRadioValueReceived(name,value):
     global data
-    if name=="weight":data["weight"]=value
-    if name=="roll":data["roll"]=value
-    if name=="pitch":data["pitch"]=value
-    if name=="distance":data["distance"]=value
-    if name=="alert0":data["alert0"]=value
-    if name=="alert1":data["alert1"]=value
+    global initStep
+    if initStep==1:
+        if name=="CK" and value==1:
+            initStep=2
+            radio.send_value("CK", 2)
+            radio.set_group(40)
+    if initStep==2:
+        if name=="weight":data["weight"]=value
+        if name=="roll":data["roll"]=value
+        if name=="pitch":data["pitch"]=value
+        if name=="distance":data["distance"]=value
+        if name=="alert0":data["alert0"]=value
+        if name=="alert1":data["alert1"]=value
+radio.on_received_value(onRadioValueReceived)
 
-def on_received_number(receivedNumber):
+def onRadioNumberReceived(receivedNumber):
     global data
-    if receivedNumber==1:
-        serial.write_line(JSON.stringify(data))
-        data={  'weight':-1,
-                'roll':-1,
-                'pitch':-1,
-                'distance':-1,
-                'alert0':-1,
-                'alert1':-1
-                    }
+    global initStep
+    if initStep==2:
+        if receivedNumber==1:
+            serial.write_line(JSON.stringify(data))
+            data={  'weight':-1,
+                    'roll':-1,
+                    'pitch':-1,
+                    'distance':-1,
+                    'alert0':-1,
+                    'alert1':-1
+                        }
+radio.on_received_number(onRadioNumberReceived)
 
-radio.on_received_number(on_received_number)
-radio.on_received_value(on_received_value)
+def onSerialDataReceived():
+    global initStep
+    #signal table:
+    # 0: initStep 0 signal
 
+    signal=str(serial.read_until(";")).split(":")
+    if signal[0]=="ST" and signal[1]=="0":
+        initStep=1
+        radio.set_group(22)
+    elif signal[0]=="SP":
+        radio.send_value("SP", int(signal[1]))
 
+serial.on_data_received(";", onSerialDataReceived)

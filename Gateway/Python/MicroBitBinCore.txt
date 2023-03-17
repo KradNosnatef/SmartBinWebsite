@@ -1,38 +1,36 @@
-import JSON
+radio.set_group(40)
 
-def on_button_pressed_a():
-    HX711.set_scale(5000)
-    HX711.tare(10)
-input.on_button_pressed(Button.A, on_button_pressed_a)
+heartBeatCounter=0
+initStep=1
 
-serial.redirect_to_usb()
-
-valor2 = 0
 HX711.SetPIN_DOUT(DigitalPin.P0)
 HX711.SetPIN_SCK(DigitalPin.P8)
 HX711.begin()
-radio.set_group(40)
 
 #[0] is door switch, [1] is vibrate
 alertList=[0,0]
 
-def switchDoorSensingService():
-    global alertList
-    if abs(input.rotation(Rotation.PITCH))>100 or abs(input.rotation(Rotation.PITCH))<80:
-        alertList[0]=1
-
 def getAccelerationSum():
-    
     return int(Math.sqrt(input.acceleration(Dimension.X)**2+input.acceleration(Dimension.Y)**2+input.acceleration(Dimension.Z)**2))
 
-startSensingGate=2000
-sendAlertGate=15000
+def switchDoorSensingService():
+    global alertList
+    global initStep
+    if initStep==2:
+        if abs(input.rotation(Rotation.PITCH))>100 or abs(input.rotation(Rotation.PITCH))<80:
+            alertList[0]=1
+basic.forever(switchDoorSensingService)
+
+
+startSensingGate=1200
+sendAlertGate=11000
 sensingTimeLimit=10000
 startVibrationSensing=False
 sensingTimeCounter=0
 sensingIntegrationCounter=0
-
 def vibrationSensingService():
+    global initStep
+
     global alertList
 
     global startSensingGate
@@ -41,40 +39,87 @@ def vibrationSensingService():
     global startVibrationSensing
     global sensingTimeCounter
     global sensingIntegrationCounter
+    if initStep==2:
+        accelerationSum=getAccelerationSum()
+        if startVibrationSensing==False:
+            if accelerationSum>startSensingGate:startVibrationSensing=True
 
-    accelerationSum=getAccelerationSum()
-    if startVibrationSensing==False:
-        if accelerationSum>startSensingGate:startVibrationSensing=True
+        if sensingTimeCounter>sensingTimeLimit:
+            if sensingIntegrationCounter>sendAlertGate:
+                alertList[1]=1
+            startVibrationSensing=False
+            sensingTimeCounter=0
+            sensingIntegrationCounter=0
 
-    if sensingTimeCounter>sensingTimeLimit:
-        if sensingIntegrationCounter>sendAlertGate:
-            alertList[1]=1
-        startVibrationSensing=False
-        sensingTimeCounter=0
-        sensingIntegrationCounter=0
-
-    if startVibrationSensing==True:
-        sensingTimeCounter=sensingTimeCounter+1000
-        sensingIntegrationCounter=sensingIntegrationCounter+accelerationSum
+        if startVibrationSensing==True:
+            sensingTimeCounter=sensingTimeCounter+1000
+            sensingIntegrationCounter=sensingIntegrationCounter+accelerationSum
 
     pause(1000)
+basic.forever(vibrationSensingService)
 
+reportPeriod=10000
 def radioSendingService():
     global alertList
+    global initStep
+    global reportPeriod
 
-    radio.send_value("weight", HX711.get_units(10)*20)
-    radio.send_value("roll", input.rotation(Rotation.ROLL))
-    radio.send_value("pitch", input.rotation(Rotation.PITCH))
-    radio.send_value("distance", int(grove.measure_in_centimeters(DigitalPin.P1)*10))
-    radio.send_value("alert0", alertList[0])
-    radio.send_value("alert1", alertList[1])
-    pause(50)
-    radio.send_number(1)
+    if initStep==2:
+        radio.send_value("weight", HX711.get_units(10)*20)
+        radio.send_value("roll", input.rotation(Rotation.ROLL))
+        radio.send_value("pitch", input.rotation(Rotation.PITCH))
+        radio.send_value("distance", int(grove.measure_in_centimeters(DigitalPin.P1)*10))
+        radio.send_value("alert0", alertList[0])
+        radio.send_value("alert1", alertList[1])
+        pause(50)
+        radio.send_number(1)
 
-    if alertList[0]==1:alertList[0]=0
-    if alertList[1]==1:alertList[1]=0
+        if alertList[0]==1:alertList[0]=0
+        if alertList[1]==1:alertList[1]=0
 
-    basic.pause(10050)
-
-basic.forever(vibrationSensingService)
+    basic.pause(reportPeriod+50)
 basic.forever(radioSendingService)
+
+def showInitStep():
+    global initStep
+    basic.show_number(initStep)
+basic.forever(showInitStep)
+
+def heartBeatCountingService():
+    global heartBeatCounter
+    global initStep
+    if initStep==2:
+        if heartBeatCounter>5:
+            initStep=1
+            heartBeatCounter=0
+            radio.set_group(22)
+        else:
+            heartBeatCounter=heartBeatCounter+1
+    pause(2000)
+basic.forever(heartBeatCountingService)
+        
+def onRadioValueReceived(name, value):
+    global heartBeatCounter
+    global initStep
+    global reportPeriod
+
+    if initStep==1:
+        if name=="CK":
+            if value==0:
+                radio.send_value("CK", 1)
+            elif value==2:
+                initStep=2
+                radio.set_group(40)
+        elif name=="HB":
+            initStep=2
+            radio.set_group(40)
+        elif name=="SP":
+            reportPeriod=value
+    
+    if initStep==2:
+        if name=="HB" and value==1:
+            heartBeatCounter=0
+radio.on_received_value(onRadioValueReceived)
+
+pause(1000)
+radio.set_group(22)
