@@ -12,6 +12,12 @@ app=Flask(__name__)
 def helloWorld():
     return(message["data"])
 
+@app.route('/Tapi',methods=['POST'])
+@cross_origin()
+def Tapi():
+    print(request.data.decode)
+    return("helloWorld")
+
 @app.route('/Xapi',methods=['POST'])
 def Xapi():
     message["data"]+=request.form["data"]
