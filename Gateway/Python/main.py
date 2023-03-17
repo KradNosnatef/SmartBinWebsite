@@ -7,7 +7,7 @@ import json
 import threading
 import time
 
-BID=3
+BID=-1
 mySerial=None
 num=0
 position={
@@ -41,6 +41,9 @@ class SerialReadHandler(threading.Thread):
         self.name = name
 
     def run(self):
+        global BID
+        global position
+        data={}
         while True:
             try:
                 value = mySerial.readline()
@@ -50,14 +53,13 @@ class SerialReadHandler(threading.Thread):
                 if BID==-1:
                     dataObject["longitude"]=position['longitude']
                     dataObject["latitude"]=position['latitude']
-                data={}
                 data["data"]=json.dumps(dataObject)
                 print(data)
+                result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
+                if BID==-1:BID=int(result.text)
             except:
                 serialReconnect()
                 time.sleep(1)
-            result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
-            if BID==-1:BID=int(result.text)
 
 serialReadHandler=SerialReadHandler(1,"mainHandler")
 serialReadHandler.start()

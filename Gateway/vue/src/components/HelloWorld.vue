@@ -14,35 +14,43 @@ const axios = require('axios').default
 export default {
   data() {
     return ({
-      reportPeriod: null
+      reportPeriod: null,
+      isPositionSettled: false
     })
   },
-  mounted: function () {
+  created: function () {
+    this.setPosition()
+  },
+  activated: function () {
     this.setPosition()
   },
   methods: {
+    trueSetPosition(position) {
+      this.isPositionSettled=true
+      var location_lon = position.coords.longitude
+      var location_lat = position.coords.latitude
+      console.log(location_lon, location_lat, "获取定位")
+      axios.post('/cmd/setPosition', {
+        latitude: location_lat,
+        longitude: location_lon
+      }).then(response => {
+        console.log(response)
+      })
+    },
     setPosition() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-          var location_lon = position.coords.longitude
-          var location_lat = position.coords.latitude
-          console.log(location_lon, location_lat, "获取定位")
-          axios.post('/cmd/setPosition', {
-            latitude: location_lat,
-            longitude: location_lon
-          }).then(response => {
-            console.log(response)
-          })
-        });
+        navigator.geolocation.getCurrentPosition(this.trueSetPosition);
       } else {
         alert("您的设备不支持定位功能");
       }
     },
     onClickStartUp() {
-      axios.get('/cmd/startup').then(response => {
-        console.log(response)
-      })
-
+      if (this.isPositionSettled != true) alert("Please Wait For Positioning Finished")
+      else {
+        axios.get('/cmd/startup').then(response => {
+          console.log(response)
+        })
+      }
     },
     onClickSetReportSpeed() {
       axios.post('/cmd/setReportSpeed', {
