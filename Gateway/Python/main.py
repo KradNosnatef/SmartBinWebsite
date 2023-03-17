@@ -56,8 +56,8 @@ class SerialReadHandler(threading.Thread):
             except:
                 serialReconnect()
                 time.sleep(1)
-            #result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
-            #if BID==-1:BID=int(result.text)
+            result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
+            if BID==-1:BID=int(result.text)
 
 serialReadHandler=SerialReadHandler(1,"mainHandler")
 serialReadHandler.start()
