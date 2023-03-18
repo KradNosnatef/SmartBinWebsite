@@ -26,48 +26,14 @@
 					lng: 0,
 					recentAlert: "",
 					recentAlertTimeText: "",
-					recentDistance:null
+					recentDistance: null
 				}
 			}
 		},
 		onShow() {
-			uni.request({
-				url: "/Wapi/getBinBriefing",
-				method: 'GET',
-				success: (res) => {
-					this.bins = []
-					this.points = []
-					//console.log(res.data)
-					for (var i = 0; i < res.data.length; i++) {
-
-						this.points[i] = {}
-						//console.log(res.data[i].longitude)
-						this.points[i].lng = res.data[i].longitude
-						this.points[i].lat = res.data[i].latitude
-						//console.log(i)
-
-						this.bins[i] = {
-							BID: res.data[i].BID,
-							lat: res.data[i].latitude,
-							lng: res.data[i].longitude,
-							recentAlert: res.data[i].text,
-							recentDistance:res.data[i].nearestDistance
-						}
-						
-						if(this.bins[i].recentDistance!=null)this.bins[i].recentPercentage=Math.round((-0.434)*this.bins[i].recentDistance+170)
-						else this.bins[i].recentPercentage=0
-						
-						if(this.bins[i].recentPercentage>100)this.bins[i].recentPercentage=100
-						if(this.bins[i].recentPercentage<0)this.bins[i].recentPercentage=0
-						
-					}
-					console.log(this.bins)
-				}
-			})
-
-
+			this.refershBinData()
 			//console.log("refresh bin briefing")
-
+			setInterval(this.refershBinData,5000)
 		},
 		components: {
 			BinItemCard,
@@ -75,6 +41,47 @@
 			BinInfoDialog
 		},
 		methods: {
+			refershBinData() {
+				uni.request({
+					url: "/Wapi/getBinBriefing",
+					method: 'GET',
+					success: (res) => {
+						this.bins = []
+						this.points = []
+						//console.log(res.data)
+						var i=res.data.length
+						for (var j = 0; j < res.data.length; j++) {
+							i--
+							this.points[i] = {}
+							//console.log(res.data[i].longitude)
+							this.points[i].lng = res.data[j].longitude
+							this.points[i].lat = res.data[j].latitude
+							//console.log(i)
+
+							this.bins[i] = {
+								BID: res.data[j].BID,
+								lat: res.data[j].latitude,
+								lng: res.data[j].longitude,
+								recentAlert: res.data[j].text,
+								recentDistance: res.data[j].nearestDistance
+							}
+
+							if (this.bins[i].recentDistance != null) this.bins[i].recentPercentage = Math
+								.round((-0.434) * this.bins[i].recentDistance + 170)
+							else this.bins[i].recentPercentage = 0
+
+							if (this.bins[i].recentPercentage > 100) this.bins[i].recentPercentage = 100
+							if (this.bins[i].recentPercentage < 0) this.bins[i].recentPercentage = 0
+
+						}
+						console.log(this.bins)
+					}
+				})
+
+
+
+			},
+
 			selectBinByMapHandler(event) {
 				console.log("the index:" + event.index + " is selected")
 				this.selectBinHandler(event.index)
@@ -105,14 +112,14 @@
 					},
 					success: (response) => {
 						//console.log(response.data[0][1])
-						this.dialogSettings.recentAlert=this.bins[index].recentAlert
-						this.dialogSettings.recentAlertTimeText=response.data[0][1]
+						this.dialogSettings.recentAlert = this.bins[index].recentAlert
+						this.dialogSettings.recentAlertTimeText = response.data[0][1]
 					}
 				})
 				binInfoDialog.showModal()
 			},
-			
-			closeInfoDialog(){
+
+			closeInfoDialog() {
 				binInfoDialog.close()
 			}
 		}
