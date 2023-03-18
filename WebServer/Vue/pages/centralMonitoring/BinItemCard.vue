@@ -2,6 +2,8 @@
 	<div>
 		<button class="binItemCard" @click="onButtonClick">
 			<text style="float:left">BID:{{bin.BID}}</text>
+			<text>percentage:{{bin.recentPercentage}}% </text>
+			<br>
 			<text>recent alert:{{bin.recentAlert}}</text>
 		</button>
 	</div>

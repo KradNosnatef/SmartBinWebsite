@@ -9,20 +9,31 @@ mydb = mysql.connector.connect(
 )
 
 class BinLogDAO:
-    
+    def reconnect():
+        global mydb
+        mydb = mysql.connector.connect(
+            host = 'localhost',
+            user = 'fuqianshan',
+            password = 'KRPCGroup',
+            database = 'smartbin'
+        )
 
     #register the bin into the database and return BID
     def BinRigister(latitude,longitude):
-        cursor=mydb.cursor()
-        statement = 'INSERT INTO bin (latitude, longitude) VALUES (%s, %s)'
-        value = (latitude, longitude)
+        try:
+            cursor=mydb.cursor()
+            statement = 'INSERT INTO bin (latitude, longitude) VALUES (%s, %s)'
+            value = (latitude, longitude)
 
-        cursor.execute(statement, value)
-        mydb.commit()
-        result=cursor.lastrowid
-        cursor.close()
+            cursor.execute(statement, value)
+            mydb.commit()
+            result=cursor.lastrowid
+            cursor.close()
 
-        return result
+            return result
+        except:
+            BinLogDAO.reconnect()
+            return BinLogDAO.BinRigister(latitude,longitude)
     
 
     def insertRawInfo(BID, weight, distance, pitch, roll):
@@ -98,3 +109,4 @@ class BinLogDAO:
         result=cursor.fetchall()
         cursor.close()
         return result
+    
