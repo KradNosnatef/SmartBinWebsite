@@ -113,13 +113,13 @@ def onRadioValueReceived(name, value):
         elif name=="HB":
             initStep=2
             radio.set_group(40)
-        elif name=="SP":
-            reportPeriod=value
     
     if initStep==2:
         if name=="HB" and value==1:
             heartBeatCounter=0
+        elif name=="SP":
+            reportPeriod=value
 radio.on_received_value(onRadioValueReceived)
 
-pause(1000)
+pause(5000)
 radio.set_group(22)

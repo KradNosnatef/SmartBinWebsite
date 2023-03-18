@@ -66,7 +66,7 @@ def onSerialDataReceived():
     # 0: initStep 0 signal
 
     signal=str(serial.read_until(";")).split(":")
-    if signal[0]=="ST" and signal[1]=="0":
+    if signal[0]=="ST" and int(signal[1])==0:
         initStep=1
         radio.set_group(22)
     elif signal[0]=="SP":
