@@ -14,6 +14,7 @@ position={
     'latitude':0,
     'longitude':0
 }
+abnormalAttitudeCounter=0
 
 def serialReconnect():
     try:
@@ -43,6 +44,7 @@ class SerialReadHandler(threading.Thread):
     def run(self):
         global BID
         global position
+        global abnormalAttitudeCounter
         data={}
         while True:
             try:
@@ -53,10 +55,18 @@ class SerialReadHandler(threading.Thread):
                 if BID==-1:
                     dataObject["longitude"]=position['longitude']
                     dataObject["latitude"]=position['latitude']
+
+                if dataObject["pitch"]<-90 and  dataObject["pitch"]>-110:abnormalAttitudeCounter=0
+                else: abnormalAttitudeCounter+=1
+
+                if abnormalAttitudeCounter>=10: dataObject["alert2"]=1
+                else :dataObject["alert2"]=0
+
+                
                 data["data"]=json.dumps(dataObject)
                 print(data)
-                result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
-                if BID==-1:BID=int(result.text)
+                #result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
+                #if BID==-1:BID=int(result.text)
             except:
                 serialReconnect()
                 time.sleep(1)

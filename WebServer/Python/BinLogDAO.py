@@ -59,8 +59,17 @@ class BinLogDAO:
         cursor.execute(sql)
         result=cursor.fetchall()
         
-
         result2=[{"BID":row[0],"latitude":row[1],"longitude":row[2],"text":row[3] if row[3]!=None else "No alert yet"} for row in result]
+
+        sql="SELECT bin.BID,TB.nearestDistance from bin left join (select BID, substring_index(group_concat(distance order by Timestamp desc),',',1) as nearestDistance from rawInfo group by BID) as TB on bin.BID=TB.BID;"
+        cursor.execute(sql)
+        result=cursor.fetchall()
+        nearestDistanceDictionary={}
+        for row in result:
+            nearestDistanceDictionary[str(row[0])]=row[1]
+
+        for row in result2:
+            row["nearestDistance"]=nearestDistanceDictionary[str(row["BID"])]
 
         cursor.close()
         return result2
