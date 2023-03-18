@@ -49,5 +49,5 @@ def getAlertsByBID():
     result=json.dumps(BinLogDAO.getAlertsByBID(int(dataObject['BID'])))
     return result
 
-if __name__ == '__main__':
-   app.run(host='0.0.0.0')
+#if __name__ == '__main__':
+   #app.run(host='0.0.0.0')

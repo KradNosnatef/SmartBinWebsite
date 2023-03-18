@@ -2,7 +2,7 @@ import mysql.connector
 import datetime
   
 mydb = mysql.connector.connect(
-    host = 'localhost',
+    host = '192.168.50.70',
     user = 'fuqianshan',
     password = 'KRPCGroup',
     database = 'smartbin'
@@ -12,7 +12,7 @@ class BinLogDAO:
     def reconnect():
         global mydb
         mydb = mysql.connector.connect(
-            host = 'localhost',
+            host = '192.168.50.70',
             user = 'fuqianshan',
             password = 'KRPCGroup',
             database = 'smartbin'
