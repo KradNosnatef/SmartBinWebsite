@@ -65,8 +65,8 @@ class SerialReadHandler(threading.Thread):
                 
                 data["data"]=json.dumps(dataObject)
                 print(data)
-                #result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
-                #if BID==-1:BID=int(result.text)
+                result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
+                if BID==-1:BID=int(result.text)
             except:
                 serialReconnect()
                 time.sleep(1)
