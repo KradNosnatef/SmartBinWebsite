@@ -97,7 +97,7 @@
 					success: (response) => {
 						//console.log(response.data[0][1])
 						this.dialogSettings.recentAlert=response.data[0][0]
-						this.dialogSettings.recentAlertTimeText=response.data[0][1]
+						this.dialogSettings.recentAlertTimeText=this.bins[index].recentAlert
 					}
 				})
 				binInfoDialog.showModal()
