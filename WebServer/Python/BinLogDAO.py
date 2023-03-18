@@ -98,3 +98,5 @@ class BinLogDAO:
         result=cursor.fetchall()
         cursor.close()
         return result
+    
+print(BinLogDAO.getBinBriefing())

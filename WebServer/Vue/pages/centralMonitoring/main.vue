@@ -25,7 +25,8 @@
 					lat: 0,
 					lng: 0,
 					recentAlert: "",
-					recentAlertTimeText: ""
+					recentAlertTimeText: "",
+					recentDistance:null
 				}
 			}
 		},
@@ -49,8 +50,16 @@
 							BID: res.data[i].BID,
 							lat: res.data[i].latitude,
 							lng: res.data[i].longitude,
-							recentAlert: res.data[i].text
+							recentAlert: res.data[i].text,
+							recentDistance:res.data[i].nearestDistance
 						}
+						
+						if(this.bins[i].recentDistance!=null)this.bins[i].recentPercentage=Math.round((-0.434)*this.bins[i].recentDistance+170)
+						else this.bins[i].recentPercentage=0
+						
+						if(this.bins[i].recentPercentage>100)this.bins[i].recentPercentage=100
+						if(this.bins[i].recentPercentage<0)this.bins[i].recentPercentage=0
+						
 					}
 					console.log(this.bins)
 				}
