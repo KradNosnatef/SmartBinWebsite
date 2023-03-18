@@ -3,9 +3,14 @@ radio.set_group(40)
 heartBeatCounter=0
 initStep=1
 
-HX711.SetPIN_DOUT(DigitalPin.P0)
-HX711.SetPIN_SCK(DigitalPin.P8)
+
+HX711.SetPIN_DOUT(DigitalPin.P8)
+HX711.SetPIN_SCK(DigitalPin.P0)
 HX711.begin()
+HX711.set_scale(5000)
+HX711.tare(10)
+
+
 
 #[0] is door switch, [1] is vibrate
 alertList=[0,0]
@@ -13,17 +18,8 @@ alertList=[0,0]
 def getAccelerationSum():
     return int(Math.sqrt(input.acceleration(Dimension.X)**2+input.acceleration(Dimension.Y)**2+input.acceleration(Dimension.Z)**2))
 
-def switchDoorSensingService():
-    global alertList
-    global initStep
-    if initStep==2:
-        if abs(input.rotation(Rotation.PITCH))>100 or abs(input.rotation(Rotation.PITCH))<80:
-            alertList[0]=1
-basic.forever(switchDoorSensingService)
-
-
 startSensingGate=1200
-sendAlertGate=11000
+sendAlertGate=13000
 sensingTimeLimit=10000
 startVibrationSensing=False
 sensingTimeCounter=0
@@ -58,7 +54,7 @@ def vibrationSensingService():
     pause(1000)
 basic.forever(vibrationSensingService)
 
-reportPeriod=10000
+reportPeriod=5000
 def radioSendingService():
     global alertList
     global initStep
@@ -122,4 +118,4 @@ def onRadioValueReceived(name, value):
 radio.on_received_value(onRadioValueReceived)
 
 pause(5000)
-radio.set_group(22)
+if initStep!=2:radio.set_group(22)
