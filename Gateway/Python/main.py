@@ -56,10 +56,10 @@ class SerialReadHandler(threading.Thread):
                     dataObject["longitude"]=position['longitude']
                     dataObject["latitude"]=position['latitude']
 
-                if dataObject["pitch"]<-90 and  dataObject["pitch"]>-110:abnormalAttitudeCounter=0
+                if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110:abnormalAttitudeCounter=0
                 else: abnormalAttitudeCounter+=1
 
-                if abnormalAttitudeCounter>=10: dataObject["alert2"]=1
+                if abnormalAttitudeCounter>=3: dataObject["alert2"]=1
                 else :dataObject["alert2"]=0
 
                 
