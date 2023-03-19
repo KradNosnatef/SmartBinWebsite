@@ -17,8 +17,8 @@ def Tapi():
     print(request.data.decode)
     return("helloWorld")
 
-@app.route('/Xapi',methods=['POST'])
-def Xapi():
+@app.route('/Xapi/postReport',methods=['POST'])
+def postReport():
     message["data"]+=request.form["data"]
     
     dataObject=json.loads(request.form["data"])
@@ -27,11 +27,21 @@ def Xapi():
         dataObject["BID"]=BinLogDAO.BinRigister(dataObject["latitude"],dataObject["longitude"])
 
     BinLogDAO.insertRawInfo(dataObject["BID"],dataObject["weight"],dataObject["distance"],dataObject["pitch"],dataObject["roll"])
+    #if dataObject["alert0"]==1:BinLogDAO.insertAlert(dataObject["BID"],"SwitchDoor Detected")
+    #if dataObject["alert1"]==1:BinLogDAO.insertAlert(dataObject["BID"],"Vibration Detected")
+    #if dataObject["alert2"]==1:BinLogDAO.insertAlert(dataObject["BID"],"Abnormal Attitude Detected")
+
+    return str(dataObject["BID"])
+
+@app.route('/Xapi/postAlert',methods=['POST'])
+def postAlert():
+    message["data"]+=request.form["data"]
+    dataObject=json.loads(request.form["data"])
     if dataObject["alert0"]==1:BinLogDAO.insertAlert(dataObject["BID"],"SwitchDoor Detected")
     if dataObject["alert1"]==1:BinLogDAO.insertAlert(dataObject["BID"],"Vibration Detected")
     if dataObject["alert2"]==1:BinLogDAO.insertAlert(dataObject["BID"],"Abnormal Attitude Detected")
+    return 'success'
 
-    return str(dataObject["BID"])
 
 @app.route('/Wapi/getBinBriefing')
 @cross_origin()
