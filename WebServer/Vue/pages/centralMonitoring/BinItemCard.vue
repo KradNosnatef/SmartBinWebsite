@@ -2,7 +2,9 @@
 	<div>
 		<button class="binItemCard" @click="onButtonClick">
 			<text :style="{color:bin.onlineStatusTextColor,float:'left'}">BID:{{bin.BID}} status:{{bin.onlineStatusText}}</text>
-			<text style="float:right">percentage:{{bin.recentPercentage}}% </text>
+			<br>
+			<text>{{bin.recentPercentage}}%</text>
+			<meter :value="bin.recentPercentage/100" :style="{width:'90%',float: 'right'}" optimum=0 low=0.3 high=0.7></meter>
 			<br>
 			<text>recent alert:{{bin.recentAlert}}</text>
 		</button>
