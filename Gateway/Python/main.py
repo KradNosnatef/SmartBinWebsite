@@ -52,21 +52,39 @@ class SerialReadHandler(threading.Thread):
 
                 dataObject=json.loads(value.decode().rstrip("\r\n"))
                 dataObject["BID"]=BID
+
+                #you should get a BID to do anything else
                 if BID==-1:
                     dataObject["longitude"]=position['longitude']
                     dataObject["latitude"]=position['latitude']
 
-                if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110:abnormalAttitudeCounter=0
-                else: abnormalAttitudeCounter+=1
+                    data["data"]=json.dumps(dataObject)
+                    print(data)
 
-                if abnormalAttitudeCounter>=3: dataObject["alert2"]=1
-                else :dataObject["alert2"]=0
+                    result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi/postReport",data=data)
+                    if BID==-1:BID=int(result.text)
+
+                else:
+                    if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110:abnormalAttitudeCounter=0
+                    else: abnormalAttitudeCounter+=1
+                    
+                    if abnormalAttitudeCounter>=3: dataObject["alert2"]=1
+                    else :dataObject["alert2"]=0
+
+                    needToSendReport=False
+                    if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110 and dataObject["accel"]<1200 and dataObject["accel"]>800:
+                        needToSendReport=True
+                    else: print("regular report will not be sent")
+                    data["data"]=json.dumps(dataObject)
+                    print(data)
+                    #if BID!=-1 anyway you must post the alert
+                    requests.post("http://fuqianshan.asuscomm.com:22000/Xapi/postAlert",data=data)
+                    #when pitch or accel shows unstable situation do not send regular report
+                    if needToSendReport:requests.post("http://fuqianshan.asuscomm.com:22000/Xapi/postReport",data=data)
 
                 
-                data["data"]=json.dumps(dataObject)
-                print(data)
-                result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
-                if BID==-1:BID=int(result.text)
+                #result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
+                #if BID==-1:BID=int(result.text)
             except:
                 serialReconnect()
                 time.sleep(1)
