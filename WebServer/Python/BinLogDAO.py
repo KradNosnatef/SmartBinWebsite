@@ -72,9 +72,9 @@ class BinLogDAO:
 
     def getBinBriefing():
         try:
-            print("?1")
+            #print("?1")
             mydb.commit()
-            print("?2")
+            #print("?2")
 
             cursor=mydb.cursor()
             sql="SELECT bin.BID,bin.Latitude,bin.Longitude,TB.nearestAlert from bin left join (select BID, substring_index(group_concat(text order by Timestamp desc),',',1) as nearestAlert from alert group by BID) as TB on bin.BID=TB.BID;"
