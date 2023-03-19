@@ -1,15 +1,21 @@
 <template>
 	<view class="content">
-		<view class="text-area">
-			<text class="title">{{title}}</text>
-		</view>
-		<div>
+		<div style="margin-top: 5%;margin-left: 10px;margin-right: 10px;">
+			<view class="text-area">
+				<text class="title">Input admin password and press button to login into ADMIN mode</text>
+			</view>
+			<view class="text-area">
+				<text class="title">or</text>
+			</view>
+			<view class="text-area">
+				<text class="title">Press login button without password to visit in GUEST mode</text>
+			</view>
+		</div>
+		<div style="margin-top: 30px;">
 			<form>
-				password: <input type="text" name="password" style="background-color: aqua;" />
+				<input type="text" name="password" style="outline:auto ;" v-model="value" placeholder="ADMIN Password"/>
 			</form>
-			<navigator url="/pages/mainMenu/main">
-				<button>login</button>
-			</navigator>
+			<button style="margin-top: 10px; margin-bottom: 30px;" @click="onClickLogin">login</button>
 		</div>
 	</view>
 </template>
@@ -18,13 +24,23 @@
 	export default {
 		data() {
 			return {
-				title: 'Input admin password to login'
+				value:""
 			}
 		},
 		onLoad() {
-
+			
 		},
 		methods: {
+			onClickLogin(){
+				if(this.value!=""){
+					alert("Wrong Password")
+				}
+				else{
+					uni.navigateTo({
+						url:"/pages/mainMenu/main"
+					})
+				}
+			}
 		}
 	}
 </script>
@@ -35,6 +51,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		outline-style: auto;
 	}
 
 	.logo {
@@ -53,6 +70,6 @@
 
 	.title {
 		font-size: 36rpx;
-		color: #8f8f94;
+		color: black;
 	}
 </style>

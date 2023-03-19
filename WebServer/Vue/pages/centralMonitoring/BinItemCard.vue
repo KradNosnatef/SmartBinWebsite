@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<button class="binItemCard" @click="onButtonClick">
-			<text style="float:left">BID:{{bin.BID}}</text>
-			<text>percentage:{{bin.recentPercentage}}% </text>
+			<text :style="{color:bin.onlineStatusTextColor,float:'left'}">BID:{{bin.BID}} status:{{bin.onlineStatusText}}</text>
+			<text style="float:right">percentage:{{bin.recentPercentage}}% </text>
 			<br>
 			<text>recent alert:{{bin.recentAlert}}</text>
 		</button>
@@ -20,6 +20,9 @@
 					BID:this.bin.BID
 				}
 				this.$emit("selectBinByButton",event)
+			},
+			getOnlineStatusColor(){
+				return true
 			}
 		}
 	}

@@ -3,6 +3,9 @@
 		<baidu-map class="bm-view" ak="uK1MNayhkgUDF5QPuvU6fsQGuoxKEN8u" center="新加坡" :zoom="12" :double-click-zoom="false">
 			<bm-point-collection v-bind:points="points" shape="BMAP_POINT_SHAPE_STAR" color="red" @click="onPointClick" @mouseover="onPointMouseOver"></bm-point-collection>
 			<bm-marker :position="position" v-if="enable"></bm-marker>
+			<p :key="bins.length">
+				<bm-label v-for="index in bins.length" :content="bins[index-1].BID.toString()" :position="{lng:bins[index-1].lng,lat:bins[index-1].lat}"></bm-label>
+			</p>
 		</baidu-map>
 	</div>
 </template>
@@ -12,9 +15,11 @@
 	import BaiduMap from 'vue-baidu-map/components/map/Map.vue'
 	import BmPointCollection from 'vue-baidu-map/components/overlays/PointCollection.vue'
 	import BmMarker from 'vue-baidu-map/components/overlays/Marker.vue'
+	import BmLabel from 'vue-baidu-map/components/overlays/Label.vue'
 	export default {
 		props:{
-			points:Array
+			points:Array,
+			bins:Array
 		},
 		mounted() {
 		},
@@ -30,7 +35,8 @@
 		components: {
 			BaiduMap,
 			BmPointCollection,
-			BmMarker
+			BmMarker,
+			BmLabel
 		},
 		methods: {
 			

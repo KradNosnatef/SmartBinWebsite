@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<MyMap v-bind:points="points" @selectBinByMap="selectBinByMapHandler"></MyMap>
+		<MyMap v-bind:points="points" v-bind:bins="bins" @selectBinByMap="selectBinByMapHandler"></MyMap>
 		<p v-for="bin in bins">
 			<BinItemCard v-bind:bin="bin" @selectBinByButton="selectBinByButtonHandler"></BinItemCard>
 		</p>
@@ -26,7 +26,8 @@
 					lng: 0,
 					recentAlert: "",
 					recentAlertTimeText: "",
-					recentDistance: null
+					recentDistance: null,
+					recentReportTime: null,
 				}
 			}
 		},
@@ -63,7 +64,16 @@
 								lat: res.data[j].latitude,
 								lng: res.data[j].longitude,
 								recentAlert: res.data[j].text,
-								recentDistance: res.data[j].nearestDistance
+								recentDistance: res.data[j].nearestDistance,
+								recentReportTime:res.data[j].nearestReportTime
+							}
+							if (this.bins[i].recentReportTime>300){
+								this.bins[i].onlineStatusText="offline"
+								this.bins[i].onlineStatusTextColor="red"
+							}
+							else {
+								this.bins[i].onlineStatusText="online"
+								this.bins[i].onlineStatusTextColor="green"
 							}
 
 							if (this.bins[i].recentDistance != null) this.bins[i].recentPercentage = Math

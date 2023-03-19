@@ -1,6 +1,6 @@
 {
     "name" : "Vue",
-    "appid" : "",
+    "appid" : "__UNI__C5B511E",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -72,14 +72,19 @@
     "h5" : {
         "devServer" : {
             "https" : false,
-			"disableHostCheck":true,
-			"proxy":{
-				"/Wapi":{
-					"target":"http://fuqianshan.asuscomm.com:22000",
-					"changeOrigin":true,
-					"secure":false
-				}
-			}
+            "disableHostCheck" : true,
+            "proxy" : {
+                "/Wapi" : {
+                    "target" : "http://fuqianshan.asuscomm.com:22000",
+                    "changeOrigin" : true,
+                    "secure" : false
+                },
+                "/" : {
+                    "target" : "http://fuqianshan.asuscomm.com:22000",
+                    "changeOrigin" : true,
+                    "secure" : false
+                }
+            }
         }
     }
 }

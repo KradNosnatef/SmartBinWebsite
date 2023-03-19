@@ -2,8 +2,6 @@
 	<view>
 		<div style="margin-top: 20px;margin-left: 20px; margin-right: 20px;">
 			<button style="margin: 10px;" @click="gotoCentralMonitoring">Central Monitoring</button>
-			<button style="margin: 10px;">Register New Bin</button>
-			<button style="margin: 10px;" @click="callBIDInputDialog('realTimeTelemetry/main')">Real-time telemetry</button>
 			<button style="margin: 10px;" @click="callBIDInputDialog('logInfo/main')">Get Log Data</button>
 		</div>
 		<dialog id="dialog" style="margin: auto;">

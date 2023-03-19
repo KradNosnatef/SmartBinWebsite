@@ -19,9 +19,9 @@
 			}
 		},
 		{
-			"path": "pages/realTimeTelemetry/main",
+			"path": "pages/logInfo/main",
 			"style": {
-				"navigationBarTitleText": "Real-Time Telemetry"
+				"navigationBarTitleText": "Raw Log Info"
 			}
 		}
 	],
