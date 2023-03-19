@@ -2,7 +2,7 @@ import mysql.connector
 import datetime
   
 mydb = mysql.connector.connect(
-    host = '192.168.50.70',
+    host = 'fuqianshan.asuscomm.com',
     user = 'fuqianshan',
     password = 'KRPCGroup',
     database = 'smartbin'
@@ -12,7 +12,7 @@ class BinLogDAO:
     def reconnect():
         global mydb
         mydb = mysql.connector.connect(
-            host = '192.168.50.70',
+            host = 'fuqianshan.asuscomm.com',
             user = 'fuqianshan',
             password = 'KRPCGroup',
             database = 'smartbin'
@@ -72,7 +72,9 @@ class BinLogDAO:
 
     def getBinBriefing():
         try:
+            print("?1")
             mydb.commit()
+            print("?2")
 
             cursor=mydb.cursor()
             sql="SELECT bin.BID,bin.Latitude,bin.Longitude,TB.nearestAlert from bin left join (select BID, substring_index(group_concat(text order by Timestamp desc),',',1) as nearestAlert from alert group by BID) as TB on bin.BID=TB.BID;"
@@ -89,11 +91,22 @@ class BinLogDAO:
                 nearestDistanceDictionary[str(row[0])]=row[1]
 
             for row in result2:
-                row["nearestDistance"]=nearestDistanceDictionary[str(row["BID"])]
+                if str(row["BID"]) in nearestDistanceDictionary:
+                    row["nearestDistance"]=nearestDistanceDictionary[str(row["BID"])]
 
             cursor.close()
+
+            result=BinLogDAO.getRecentReportTimeToNowBriefing()
+            nearestReportTimeDictionary={}
+            for row in result:
+                nearestReportTimeDictionary[str(row[0])]=row[1]
+
+            for row in result2:
+                if str(row["BID"]) in nearestReportTimeDictionary:
+                    row["nearestReportTime"]=nearestReportTimeDictionary[str(row["BID"])]
             return result2
         except:
+            print("getBinBriefing failed")
             BinLogDAO.reconnect()
             return BinLogDAO.getBinBriefing()
     
@@ -119,7 +132,7 @@ class BinLogDAO:
             mydb.commit()
 
             cursor=mydb.cursor()
-            sql="SELECT Weight,Distance,Pitch,Roll,cast(Timestamp as char(20)) from rawInfo where BID=%s order by Timestamp desc;"
+            sql="SELECT Weight,Distance,Pitch,Roll,cast(Timestamp as char(20)) from rawInfo where BID=%s order by Timestamp desc limit 0,1000;"
             val=(BID,)
             cursor.execute(sql,val)
 
@@ -127,6 +140,38 @@ class BinLogDAO:
             cursor.close()
             return result
         except:
+            print("getRawInfoByBID failed")
             BinLogDAO.reconnect()
             return BinLogDAO.getRawInfoByBID(BID)
-    
+        
+    #input a DateTimeText and return seconds to Now
+    def getSecondToNow(dateTimeText):
+        try:
+            mydb.commit()
+
+            cursor=mydb.cursor()
+            sql="SELECT TIMESTAMPDIFF(SECOND,%s,NOW());"
+            val=(dateTimeText,)
+            cursor.execute(sql,val)
+
+            result=cursor.fetchall()
+            cursor.close()
+            return result
+        except:
+            BinLogDAO.reconnect()
+            return BinLogDAO.getSecondToNow(dateTimeText)
+        
+    def getRecentReportTimeToNowBriefing():
+        try:
+            mydb.commit()
+
+            cursor=mydb.cursor()
+            sql="SELECT BID,TIMESTAMPDIFF(SECOND,CAST(MAX(Timestamp) as char(20)),NOW()) from rawInfo group by BID;"
+            cursor.execute(sql)
+
+            result=cursor.fetchall()
+            cursor.close()
+            return result
+        except:
+            BinLogDAO.reconnect()
+            return BinLogDAO.getRecentReportTimeToNowBriefing()
