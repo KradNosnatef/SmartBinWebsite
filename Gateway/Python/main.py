@@ -72,7 +72,7 @@ class SerialReadHandler(threading.Thread):
                     else :dataObject["alert2"]=0
 
                     needToSendReport=False
-                    if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110 and dataObject["accel"]<1200 and dataObject["accel"]>800:
+                    if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110 and dataObject["accel"]<1200 and dataObject["accel"]>800 and dataObject["distance"]<420 and dataObject["distance"]>120 and dataObject["weight"]>0 and dataObject["weight"]<1500:
                         needToSendReport=True
                     else: print("regular report will not be sent")
                     data["data"]=json.dumps(dataObject)
@@ -83,8 +83,6 @@ class SerialReadHandler(threading.Thread):
                     if needToSendReport:requests.post("http://fuqianshan.asuscomm.com:22000/Xapi/postReport",data=data)
 
                 
-                #result=requests.post("http://fuqianshan.asuscomm.com:22000/Xapi",data=data)
-                #if BID==-1:BID=int(result.text)
             except:
                 serialReconnect()
                 time.sleep(1)
