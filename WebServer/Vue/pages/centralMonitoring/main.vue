@@ -34,7 +34,7 @@
 		onShow() {
 			this.refershBinData()
 			//console.log("refresh bin briefing")
-			setInterval(this.refershBinData,5000)
+			setInterval(this.refershBinData,1000)
 		},
 		components: {
 			BinItemCard,
@@ -67,7 +67,7 @@
 								recentDistance: res.data[j].nearestDistance,
 								recentReportTime:res.data[j].nearestReportTime
 							}
-							if (this.bins[i].recentReportTime>300){
+							if (this.bins[i].recentReportTime>300 || typeof(this.bins[i].recentReportTime)=='undefined'){
 								this.bins[i].onlineStatusText="offline"
 								this.bins[i].onlineStatusTextColor="red"
 							}
