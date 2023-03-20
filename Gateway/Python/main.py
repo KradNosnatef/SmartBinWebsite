@@ -68,11 +68,11 @@ class SerialReadHandler(threading.Thread):
                     if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110:abnormalAttitudeCounter=0
                     else: abnormalAttitudeCounter+=1
                     
-                    if abnormalAttitudeCounter>=3: dataObject["alert2"]=1
+                    if abnormalAttitudeCounter>=2: dataObject["alert2"]=1
                     else :dataObject["alert2"]=0
 
                     needToSendReport=False
-                    if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110 and dataObject["accel"]<1200 and dataObject["accel"]>800 and dataObject["distance"]<420 and dataObject["distance"]>120 and dataObject["weight"]>0 and dataObject["weight"]<1500:
+                    if dataObject["pitch"]<-70 and  dataObject["pitch"]>-110 and dataObject["accel"]<1200 and dataObject["accel"]>800 and dataObject["distance"]<420 and dataObject["distance"]>120:
                         needToSendReport=True
                     else: print("regular report will not be sent")
                     data["data"]=json.dumps(dataObject)
@@ -84,6 +84,7 @@ class SerialReadHandler(threading.Thread):
 
                 
             except:
+                print("why?")
                 serialReconnect()
                 time.sleep(1)
 
