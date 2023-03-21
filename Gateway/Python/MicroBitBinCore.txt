@@ -61,13 +61,20 @@ def radioSendingService():
     global reportPeriod
 
     if initStep==2:
+        radio.send_value("accel",getAccelerationSum())
+        pause(20)
         radio.send_value("weight", HX711.get_units(10)*20)
+        pause(20)
         radio.send_value("roll", input.rotation(Rotation.ROLL))
+        pause(20)
         radio.send_value("pitch", input.rotation(Rotation.PITCH))
+        pause(20)
         radio.send_value("distance", int(grove.measure_in_centimeters(DigitalPin.P1)*10))
+        pause(20)
         radio.send_value("alert0", alertList[0])
+        pause(20)
         radio.send_value("alert1", alertList[1])
-        pause(50)
+        pause(20)
         radio.send_number(1)
 
         if alertList[0]==1:alertList[0]=0
