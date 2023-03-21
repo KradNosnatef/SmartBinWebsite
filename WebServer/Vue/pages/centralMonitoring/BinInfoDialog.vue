@@ -7,7 +7,6 @@
 		<p>Latitude: {{dialogSettings.lat}}</p>
 		</br>
 		<p>Most Recent Alert: {{dialogSettings.recentAlert}} </br>at {{dialogSettings.recentAlertTimeText}}</p>
-		<button @click="onClick" style="margin-top: 5px;">goto Real-Time Telemetry</button>
 		<button @click="onClick" style="margin-top: 5px;">goto Log Info</button>
 		<button @click="onClickCancel" style="margin-top: 5px;">cancel</button>
 	</div>
@@ -26,7 +25,11 @@
 		onShow() {
 		},
 		methods: {
-			onClick() {},
+			onClick() {
+				uni.navigateTo({
+					url:"/pages/logInfo/main?BID="+this.dialogSettings.BID
+				})
+			},
 			onClickCancel(){
 				this.$emit("cancel")
 			}
